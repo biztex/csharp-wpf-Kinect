@@ -1,0 +1,50 @@
+private void notifyPicture(string url)　//Lineに画像を転送する部分
+     {
+         _lineNotify(" ", 0, 0, url);
+     }
+     private void notifySticker(int stickerID, int stickerPackageID)  // Lineにsticker画像を送る部分
+     {
+         _lineNotify(" ", stickerPackageID, stickerID, "");
+     }
+     private void lineNotify(string msg)  // Lineメッセージ
+     {
+         _lineNotify(msg, 0, 0, "");
+     }
+     private void _lineNotify(string msg, int stickerPackageID, int stickerID, string pictureUrl)
+     {
+         string token = "3GOS5jRQ5a3vVnJtzdZtrWOTd1ZqsMOxVs0UCcIk6vd"; // ライントークン情報
+         try
+         {
+             var request = (HttpWebRequest)WebRequest.Create("https://notify-api.line.me/api/notify");   //line apiに接続するリクエスト
+
+             var postData = string.Format("message={0}", msg);   //メッセージを受け取る部分
+             if (stickerPackageID > 0 && stickerID > 0)     //ステッカーを送るかどうかを決める
+             {
+                 var stickerPackageId = string.Format("stickerPackageId={0}", stickerPackageID);
+                 var stickerId = string.Format("stickerId={0}", stickerID);
+                 postData += "&" + stickerPackageId.ToString() + "&" + stickerId.ToString();
+             }
+             if (pictureUrl != "") // 画像を送信するかどうかを決定する
+             {
+                 var imageThumbnail = string.Format("imageThumbnail={0}", pictureUrl);   // 画像の名前
+                 var imageFullsize = string.Format("imageFullsize={0}", pictureUrl);      // 画像の名前画像のURL
+                 postData += "&" + imageThumbnail.ToString() + "&" + imageFullsize.ToString();    //送信したい画像の総データ
+             }
+             var data = Encoding.UTF8.GetBytes(postData);   //データをUTF-8形式に変換
+
+             request.Method = "POST";   // 伝送方式の規定（POST、GET、PUT）
+             request.ContentType = "application/x-www-form-urlencoded";    //転送するデータの形式
+             request.ContentLength = data.Length;         // 転送するデータの長さ
+             request.Headers.Add("Authorization", "Bearer " + token);
+
+             using (var stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);      //データの送信
+             var response = (HttpWebResponse)request.GetResponse();   //送信データの確認結果
+             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();    //転送完了
+         }
+         catch (Exception ex)
+         {
+             Console.WriteLine(ex.ToString()); // エラー処理
+         }
+     }
+ }
+}
