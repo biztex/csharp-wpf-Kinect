@@ -16,86 +16,63 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using System.Text;
     using System;
     using System.Windows.Controls;
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    /// <まとめ>
+    /// MainWindow.xamlのインタラクションロジック
+    /// </まとめ>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// Width of output drawing
-        /// </summary>
+        /// <まとめ>
+        /// 出力画面の幅
+        /// </まとめ>
         private const float RenderWidth = 640.0f;
 
-        /// <summary>
-        /// Height of our output drawing
-        /// </summary>
+       
+        /// 出力画面の高さ
+      
         private const float RenderHeight = 480.0f;
 
-        /// <summary>
-        /// Thickness of drawn joint lines
-        /// </summary>
+        /// 描画されたジョイントラインの太さ
         private const double JointThickness = 3;
 
-        /// <summary>
-        /// Thickness of body center ellipse
-        /// </summary>
+        /// 体の中心の楕円の厚さ
         private const double BodyCenterThickness = 10;
 
-        /// <summary>
-        /// Thickness of clip edge rectangles
-        /// </summary>
+        /// クリップエッジの長方形の厚さ
+		
         private const double ClipBoundsThickness = 10;
 
-        /// <summary>
-        /// Brush used to draw skeleton center point
-        /// </summary>
+        /// スケルトンの中心点を描画するために使用されるブラシ
         private readonly Brush centerPointBrush = Brushes.Blue;
 
-        /// <summary>
-        /// Brush used for drawing joints that are currently tracked
-        /// </summary>
+        /// 現在追跡されているジョイントの描画に使用されるブラシ
         private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
 
-        /// <summary>
-        /// Brush used for drawing joints that are currently inferred
-        /// </summary>        
+        /// 現在推測されているジョイントの描画に使用されるブラシ        
         private readonly Brush inferredJointBrush = Brushes.Yellow;
 
-        /// <summary>
-        /// Pen used for drawing bones that are currently tracked
-        /// </summary>
+        /// 現在追跡されているボーンの描画に使用されるペン
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
 
-        /// <summary>
-        /// Pen used for drawing bones that are currently inferred
-        /// </summary>        
+        /// 現在推測されている骨を描くために使用されるペン
+		
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
 
-        /// <summary>
-        /// Active Kinect sensor
-        /// </summary>
+        /// アクティブKinectセンサー
         private KinectSensor sensor;
 
-        /// <summary>
-        /// Drawing group for skeleton rendering output
-        /// </summary>
+        /// スケルトンレンダリング出力の描画グループ
         private DrawingGroup drawingGroup;
 
-        /// <summary>
-        /// Drawing image that we will display
-        /// </summary>
+        /// 表示する描画画像
         private DrawingImage imageSource;
 
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        /// 
+        /// MainWindowクラスの新しいインスタンスを初期化します。
 
 
         Image userImage = new Image();
 
-        /// Line Flag variable
-        ///  used to send  Line notifications only once
+        ///ラインフラグ変数
+        /// Line通知を1回だけ送信するために使用
         Boolean i = false;
         Boolean j = false;
         public MainWindow()
@@ -103,11 +80,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Draws indicators to show which edges are clipping skeleton data
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw clipping information for</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
+        ///どのエッジがスケルトンデータをクリッピングしているかを示すインジケーターを描画します
+      
+        /// <paramname = "skeleton">クリッピング情報を描画するスケルトン</ param>
+        /// <paramname = "drawingContext">描画先の描画コンテキスト</ param>
         private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
         {
             if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
@@ -143,26 +119,26 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Execute startup tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+       
+        ///スタートアップタスクを実行する
+     
+        /// <paramname = "sender">イベントを送信するオブジェクト</ param>
+        /// <paramname = "e">イベント引数</ param>
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            // Create the drawing group we'll use for drawing
+            // 描画に使用する描画グループを作成します
             this.drawingGroup = new DrawingGroup();
 
-            // Create an image source that we can use in our image control
+            // 画像コントロールで使用できる画像ソースを作成します
             this.imageSource = new DrawingImage(this.drawingGroup);
 
-            // Display the drawing using our image control
+            // 画像コントロールを使用して図面を表示します
             Image.Source = this.imageSource;
 
-            // Look through all sensors and start the first connected one.
-            // This requires that a Kinect is connected at the time of app startup.
-            // To make your app robust against plug/unplug, 
-            // it is recommended to use KinectSensorChooser provided in Microsoft.Kinect.Toolkit (See components in Toolkit Browser).
+            // すべてのセンサーを調べて、最初に接続されたものを起動します。
+            // これには、アプリ起動時にKinectが接続されている必要があります。
+            // アプリをプラグ/アンプラグに強くするためには 
+            // Microsoft.Kinect.Toolkitで提供されているKinectSensorChooserを使用することをお勧めします（Toolkit Browserのコンポーネントを参照）。
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
                 if (potentialSensor.Status == KinectStatus.Connected)
@@ -177,10 +153,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 // Turn on the skeleton stream to receive skeleton frames
                 this.sensor.SkeletonStream.Enable();
 
-                // Add an event handler to be called whenever there is new color frame data
+                // 新しいカラーフレームデータがあるたびに呼び出されるイベントハンドラを追加する
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
 
-                // Start the sensor!
+                // センサーを起動します。!
                 try
                 {
                     this.sensor.Start();
@@ -197,11 +173,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+        /// シャットダウンタスクの実行
+		
+        /// <param name="sender">イベントを送信するオブジェクト</param>
+        /// <param name="e">イベント引数</param>
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (null != this.sensor)
@@ -210,11 +185,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Event handler for Kinect sensor's SkeletonFrameReady event
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+        
+        /// KinectセンサーのSkeletonFrameReadyイベントのイベントハンドラー
+        
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
@@ -230,7 +203,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             using (DrawingContext dc = this.drawingGroup.Open())
             {
-                // Draw a transparent background to set the render size
+                // レンダリングサイズを設定するために透明な背景を描く
                 dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
                 if (skeletons.Length != 0)
@@ -255,19 +228,20 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     }
                 }
 
-                // prevent drawing outside of our render area
+                // レンダリングエリア外への描画を防ぐ
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
         }
 
-        /// <summary>
-        /// Draws a skeleton's bones and joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
+      
+        /// スケルトンの骨や関節を描く
+      
+
+		/// <param name="skeleton">骨格を描く</param>
+        /// <param name="drawingContext">描画先のコンテキスト</param>
         private void DrawBonesAndJoints(Skeleton skeleton, DrawingContext drawingContext)
         {
-            // Render Torso
+            // トルソーのレンダリング
             this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
             this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
             this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
@@ -276,27 +250,27 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
-            // Left Arm
+            // 左腕
             this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
             this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
             this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
 
-            // Right Arm
+            // 右腕
             this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
             this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
             this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
 
-            // Left Leg
+            // 左足
             this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
             this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
             this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
 
-            // Right Leg
+            // 右足
             this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
             this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
             this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
 
-            // Render Joints
+            // レンダージョイント
             foreach (Joint joint in skeleton.Joints)
             {
                 Brush drawBrush = null;
@@ -319,19 +293,22 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
 
 
+			//肘と足首、膝、肩部位の座標入力
+            
 
-            //// check if the Elbow is higher than Shoulder.
+            SkeletonPoint headPoint         = skeleton.Joints[JointType.ShoulderCenter].Position;	//肩
+            SkeletonPoint ElbowLeftPoint    = skeleton.Joints[JointType.ElbowLeft].Position;		//肘
+            SkeletonPoint ElbowRightPoint   = skeleton.Joints[JointType.ElbowRight].Position;		//肘
+            SkeletonPoint AnkleLeft         = skeleton.Joints[JointType.AnkleLeft].Position;		//足首
+            SkeletonPoint AnkleRight         = skeleton.Joints[JointType.AnkleRight].Position;		//足首
+            SkeletonPoint KneeRightPoint    = skeleton.Joints[JointType.KneeRight].Position;		//膝
+            SkeletonPoint KneeLeftPoint    = skeleton.Joints[JointType.KneeLeft].Position;			//膝
+            			
 
-            SkeletonPoint headPoint         = skeleton.Joints[JointType.ShoulderCenter].Position;
-            SkeletonPoint ElbowLeftPoint    = skeleton.Joints[JointType.ElbowLeft].Position;
-            SkeletonPoint ElbowRightPoint   = skeleton.Joints[JointType.ElbowRight].Position;
-            SkeletonPoint AnkleLeft         = skeleton.Joints[JointType.AnkleLeft].Position;
-            SkeletonPoint AnkleRight         = skeleton.Joints[JointType.AnkleRight].Position;
-            SkeletonPoint KneeRightPoint    = skeleton.Joints[JointType.KneeRight].Position;
-            SkeletonPoint KneeLeftPoint    = skeleton.Joints[JointType.KneeLeft].Position;
-            SkeletonPoint hipPoint    = skeleton.Joints[JointType.HipCenter].Position;
 
-            if(AnkleLeft.Y > KneeRightPoint.Y || AnkleRight.Y > KneeLeftPoint.Y)
+			
+            ///足首が膝よりも高いところにある場合
+			if(AnkleLeft.Y > KneeRightPoint.Y || AnkleRight.Y > KneeLeftPoint.Y)
             {
                 if (j == false)
                 {
@@ -340,11 +317,14 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 }
                 j = true;
             }
-            else if (ElbowLeftPoint.Y < headPoint.Y || ElbowRightPoint.Y < headPoint.Y)
+            else if (AnkleLeft.Y < KneeRightPoint.Y || AnkleRight.Y < KneeLeftPoint.Y)
             {
                 j = false;
             }
-
+			
+			
+			
+			//// 肘が肩より高いところにある場合
             if (ElbowLeftPoint.Y > headPoint.Y || ElbowRightPoint.Y > headPoint.Y)
             {
 
@@ -362,26 +342,27 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Maps a SkeletonPoint to lie within our render space and converts to Point
-        /// </summary>
-        /// <param name="skelpoint">point to map</param>
-        /// <returns>mapped point</returns>
+        
+        /// SkeletonPointをレンダリング空間内にマッピングし、Pointに変換します。 
+        
+		/// <param name="skelpoint">ポイント→マップ</param>
+        /// <returns>マップされたポイント</returns>
         private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
         {
-            // Convert point to depth space.  
-            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+            // 点を深度空間に変換します。  
+            // 奥行きを直接使うわけではありませんが、640x480の出力解像度でポイントが欲しいのです。
             DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
             return new Point(depthPoint.X, depthPoint.Y);
         }
 
-        /// <summary>
-        /// Draws a bone line between two joints
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw bones from</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        /// <param name="jointType0">joint to start drawing from</param>
-        /// <param name="jointType1">joint to end drawing at</param>
+        
+        /// 2つの関節の間にボーンラインを描く
+        
+		
+		/// <param name="skeleton">骨を描くための骨組み</param>
+        /// <param name="drawingContext">描画先のコンテキスト</param>
+        /// <param name="jointType0">描画を開始するジョイント</param>
+        /// <param name="jointType1">で描画を終了するジョイント</param>
         private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
         {
 
@@ -389,21 +370,21 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             Joint joint0 = skeleton.Joints[jointType0];
             Joint joint1 = skeleton.Joints[jointType1];
 
-            // If we can't find either of these joints, exit
+            // これらのジョイントが見つからない場合は、終了します。
             if (joint0.TrackingState == JointTrackingState.NotTracked ||
                 joint1.TrackingState == JointTrackingState.NotTracked)
             {
                 return;
             }
 
-            // Don't draw if both points are inferred
+            // 両方のポイントが推測される場合は描かないでください
             if (joint0.TrackingState == JointTrackingState.Inferred &&
                 joint1.TrackingState == JointTrackingState.Inferred)
             {
                 return;
             }
 
-            // We assume all drawn bones are inferred unless BOTH joints are tracked
+            // BOTHジョイントが追跡されない限り、描かれたボーンはすべて推定されると仮定します。
             Pen drawPen = this.inferredBonePen;
             if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
             {
@@ -413,11 +394,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
         }
 
-        /// <summary>
-        /// Handles the checking or unchecking of the seated mode combo box
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+      
+        /// 着席モードのコンボボックスのチェック／アンチェックを処理する
+      
+        /// <param name="sender">イベントを送信するオブジェクト</param>
+        /// <param name="e">イベント引数</param>
         private void CheckBoxSeatedModeChanged(object sender, RoutedEventArgs e)
         {
             if (null != this.sensor)
@@ -436,51 +417,93 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
         /// </summary>
         /// --------  Line Notify Message --- ------------- 
+		
+		
+		
+		///  画像を送る
         private void notifyPicture(string url)
         {
             _lineNotify(" ", 0, 0, url);
         }
+		
+		/// sticker イメージとテキスト転送
+		
         private void notifySticker(int stickerID, int stickerPackageID)
         {
             _lineNotify(" ", stickerPackageID, stickerID, "");
         }
+		
+		
+		/// テキスト転送
+		
         private void lineNotify(string msg)
         {
             _lineNotify(msg, 0, 0, "");
         }
+		
+		
+		
+		
         private void _lineNotify(string msg, int stickerPackageID, int stickerID, string pictureUrl)
         {
+			
+			/// ラインアカウントトークン情報
+			
             string token = "PFDpATkd9EXZYLunRckxg47L7SlLwkJJkOoF4B8Fv6L";
+			
+			
             try
             {
+				 // Line notify APIにリクエスト HttpWebRequest方式で
+				
                 var request = (HttpWebRequest)WebRequest.Create("https://notify-api.line.me/api/notify");
 
+
+				// リクエストするデータ
+				
                 var postData = string.Format("message={0}", msg);
-                if (stickerPackageID > 0 && stickerID > 0)
+				
+				// 要求するデータがsticker画像であるかどうかを判定
+                
+				if (stickerPackageID > 0 && stickerID > 0)
                 {
                     var stickerPackageId = string.Format("stickerPackageId={0}", stickerPackageID);
                     var stickerId = string.Format("stickerId={0}", stickerID);
                     postData += "&" + stickerPackageId.ToString() + "&" + stickerId.ToString();
                 }
+				
+				// 要求するデータがイメージであるかどうかを判断する
+				
                 if (pictureUrl != "")
                 {
                     var imageThumbnail = string.Format("imageThumbnail={0}", pictureUrl);
                     var imageFullsize = string.Format("imageFullsize={0}", pictureUrl);
                     postData += "&" + imageThumbnail.ToString() + "&" + imageFullsize.ToString();
                 }
+				
+				 // データをUTF-8方式に変換します。
+				 
                 var data = Encoding.UTF8.GetBytes(postData);
 
+
+				//リクエスト方式はPOST方式です。
                 request.Method = "POST";
+				
+				//頭部規約はx-www-form-urlencoded
+				//UTF-8系列の文字を転送するための方式である。
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = data.Length;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
+				/// streamオブジェクトに文字列を書く
                 using (var stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);
                 var response = (HttpWebResponse)request.GetResponse();
                 var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
             catch (Exception ex)
             {
+				
+				//エラーメッセージ 
                 Console.WriteLine(ex.ToString());
             }
         }
